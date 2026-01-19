@@ -1,0 +1,48 @@
+body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: system-ui, Arial, sans-serif;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+input,
+textarea,
+select,
+button {
+  width: 100%;
+  padding: 0.6rem;
+  margin: 0.4rem 0 1rem 0;
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 140px;
+}
+
+.error {
+  color: #b00020;
+}
+
+small {
+  display: block;
+  opacity: 0.8;
+  margin-top: 0.2rem;
+}

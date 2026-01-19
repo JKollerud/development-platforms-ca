@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>News Platform</title>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="create.html" id="create-article">Create Article</a>
+      <a href="login.html" id="login-user">Login</a>
+      <a href="register.html" id="register-user">Register</a>
+      <a href="#" id="logout-user">Logout</a>
+    </nav>
+    <h1>News Articles</h1>
+    <p id="status" class="error"></p>
+    <div id="articles"></div>
+    <script type="module">
+      import { supabase } from './supabase.js';
+
+      // nav show/hide
+      const { data: userData } = await supabase.auth.getUser();
+      const isLoggedIn = !!userData.user;
+
+      document.getElementById('create-article').style.display = isLoggedIn
+        ? 'inline'
+        : 'none';
+      document.getElementById('logout-user').style.display = isLoggedIn
+        ? 'inline'
+        : 'none';
+      document.getElementById('login-user').style.display = isLoggedIn
+        ? 'none'
+        : 'inline';
+      document.getElementById('register-user').style.display = isLoggedIn
+        ? 'none'
+        : 'inline';
+
+      // logout
+      document
+        .getElementById('logout-user')
+        .addEventListener('click', async (e) => {
+          e.preventDefault();
+          await supabase.auth.signOut();
+          window.location.reload();
+        });
+
+      // load articles
+      const status = document.getElementById('status');
+      const container = document.getElementById('articles');
+
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        status.textContent = error.message;
+      } else if (!data.length) {
+        container.innerHTML = `<p>No articles yet.</p>`;
+      } else {
+        data.forEach((a) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+          <h2>${a.title}</h2>
+          <small>Category: ${a.category} | Submitted: ${new Date(a.created_at).toLocaleString()}</small>
+          <p>${a.content}</p>
+          `;
+          continer.appenChild(card);
+        });
+      }
+    </script>
+  </body>
+</html>
