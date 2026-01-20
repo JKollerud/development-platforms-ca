@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Create Article</title>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#" id="logout-user">Logout</a>
+    </nav>
+    <h1>Create Article</h1>
+    <form id="article-form" class="card">
+      <label>Title</label>
+      <input id="title" required />
+      <label>Category</label>
+      <select id="category" required>
+        <option value="General">General</option>
+        <option value="Tech">Tech</option>
+        <option value="Sports">Sports</option>
+        <option value="World">World</option>
+      </select>
+      <label>Body</label>
+      <textarea id="content" required></textarea>
+      <button type="submit">Publish</button>
+      <p id="error" class="error"></p>
+    </form>
+    <script type="module">
+      import { supabase } from './supabase.js';
+
+      // page protection
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        window.location.href = 'login.html';
+      }
+
+      // logout
+      document
+        .getElementById('logout-user')
+        .addEventListener('click', async (e) => {
+          e.preventDefault();
+          await supabase.auth.signOut();
+          window.location.href = 'index.html';
+        });
+
+      // create article
+      const form = document.getElementById('article-form');
+      const errorEl = document.getElementById('error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.textContent = '';
+
+        const { data: currentUser } = await supabase.auth.getUser();
+
+        const { error } = await supabase.from('articles').insert({
+          title: document.getElementById('title').value,
+          content: document.getElementById('content').value,
+          category: document.getElementById('category').value,
+          user_id: currentUser.user.id,
+        });
+
+        if (error) {
+          errorEl.textContent = error.message;
+        } else {
+          window.location.href = 'index.html';
+        }
+      });
+    </script>
+  </body>
+</html>
