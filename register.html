@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Register</title>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+    </nav>
+    <h1>Register</h1>
+    <form id="register-form" class="card">
+      <label>Email</label>
+      <input type="email" id="email" required />
+      <label>Password</label>
+      <input type="password" id="password" required />
+      <button type="submit">Create account</button>
+      <p id="error" class="error"></p>
+    </form>
+    <script type="module">
+      import { supabase } from './supabase.js';
+
+      const form = document.getElementById('register-form');
+      const errorEl = document.getElementById('error');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorEl.textContent = '';
+
+        const { error } = await supabse.auth.signUp({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        });
+
+        if (error) {
+          errorEl.textContent = error.message;
+        } else {
+          alert(
+            'Registration successfull, check your email to verify your account.',
+          );
+          window.location.href = 'login.html';
+        }
+      });
+    </script>
+  </body>
+</html>
